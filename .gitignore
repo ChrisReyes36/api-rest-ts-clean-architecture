@@ -3,5 +3,5 @@
 node_modules
 .env
 dist/
-.docker/
+.docker/*
 !.docker/.gitkeep

@@ -1,7 +1,7 @@
+dist/
+node_modules/
+src_old/
+.git/
 .idea
-.vscode
-.env
-**/node_modules
-**/dist/
-**/.docker/
-**/!.docker/.gitkeep
+.vscode/
+.env.example

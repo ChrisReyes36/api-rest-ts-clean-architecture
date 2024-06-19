@@ -1,23 +1,24 @@
-FROM node:20 as builder
-
-RUN mkdir -p /usr/src/app
-
-RUN chmod -R 777 /usr/src/app
-
-RUN chmod ugo+rwx /usr/src/app
-
+FROM node:20-alpine as deps
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
-RUN npm install -g typescript
-
 RUN npm install
 
+FROM node:20-alpine as builder
+WORKDIR /usr/src/app
+
+COPY --from=deps /usr/src/app/node_modules ./node_modules
+
 COPY . .
+RUN npm run build
 
-EXPOSE 3000
+FROM node:20-alpine as runner
+WORKDIR /usr/src/app
 
-RUN npm run build && cp -r .env.example .env
+COPY package*.json ./
+COPY .env ./
+RUN npm install --production
 
-CMD ["npm", "start"]
+COPY --from=builder /usr/src/app/dist ./dist
+
+CMD ["node", "dist/user/user.app.js"]
